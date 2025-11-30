@@ -76,11 +76,6 @@
     .button:active {
       transform: translateY(0);
     }
-
-    .link-text {
-      margin-top: 12px;
-      font-size: 0.95rem;
-    }
   </style>
   <script>
     const NEW_DOMAIN = "https://태양계정복.siustudio.me";
@@ -90,13 +85,20 @@
       const isAndroid = /Android/i.test(ua);
       const isIOS = /iP(ad|hone|od)/i.test(ua);
 
-      const androidWebView = isAndroid && (ua.includes(" wv") || /Version\/\d+\.\d+/i.test(ua));
+      // 안드로이드 WebView: "wv" 또는 "Version/X.X" 패턴
+      const androidWebView =
+        isAndroid && (ua.includes(" wv") || /Version\/\d+\.\d+/i.test(ua));
+
+      // iOS WebView: iOS 이면서 Safari 문자열이 없는 경우
       const iosWebView = isIOS && !/Safari/i.test(ua);
+
+      // 기타 인앱 브라우저들 (카톡, 페북 등)
       const genericWebView = /WebView|FBAN|FBAV|Line/i.test(ua);
 
       return androidWebView || iosWebView || genericWebView;
     }
 
+    // WebView로 열렸다면 바로 새 도메인으로 이동
     if (isWebView()) {
       window.location.replace(NEW_DOMAIN);
     }
@@ -109,7 +111,6 @@
     <p><span class="highlight">태양계정복.siustudio.me</span> 로 이전되었습니다.</p>
     <p>북마크와 즐겨찾기를 새 주소로 업데이트해 주세요.</p>
     <a class="button" href="https://태양계정복.siustudio.me">새로운 주소로 이동</a>
-    <p class="link-text">앱(WebView)으로 열리면 자동으로 새 주소로 이동합니다.</p>
   </main>
 </body>
 </html>
