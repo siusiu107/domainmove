@@ -93,14 +93,28 @@
       const iosWebView = isIOS && !/Safari/i.test(ua);
 
       // 기타 인앱 브라우저들 (카톡, 페북 등)
-      const genericWebView = /WebView|FBAN|FBAV|Line/i.test(ua);
+      const genericWebView = /WebView|FBAN|FBAV|Line|KAKAOTALK|NAVER/i.test(ua);
 
-      return androidWebView || iosWebView || genericWebView;
+      // PWA 또는 standalone 모드
+      const standalone =
+        (navigator.standalone && navigator.standalone === true) ||
+        window.matchMedia("(display-mode: standalone)").matches;
+
+      return androidWebView || iosWebView || genericWebView || standalone;
     }
 
-    // WebView로 열렸다면 바로 새 도메인으로 이동
-    if (isWebView()) {
+    function redirectToNewDomain() {
+      // replace로 시도 후, 일부 WebView에서 막히는 경우를 대비해 href로 한 번 더 시도
       window.location.replace(NEW_DOMAIN);
+      setTimeout(() => {
+        window.location.href = NEW_DOMAIN;
+      }, 100);
+    }
+
+    // WebView나 앱 내 브라우저에서 열렸다면 바로 새 도메인으로 이동
+    if (isWebView()) {
+      redirectToNewDomain();
+      document.addEventListener("DOMContentLoaded", redirectToNewDomain);
     }
   </script>
 </head>
